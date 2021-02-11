@@ -447,7 +447,7 @@ def _get_pudl_in(args: dict) -> Path:
 def _create_datastore(args: dict) -> Datastore:
     """Constructs datastore instance."""
     local_cache_path = None
-    if not args.populate_gcs_cache and not args.populate_s3_cache:
+    if not (args.populate_gcs_cache or args.populate_s3_cache):
         local_cache_path = _get_pudl_in(args) / "data"
     return Datastore(
         sandbox=args.sandbox,
