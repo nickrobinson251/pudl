@@ -827,7 +827,8 @@ def generate_datapkg_bundle(datapkg_bundle_settings,
                             datapkg_bundle_doi=None,
                             clobber=False,
                             use_local_cache: bool = True,
-                            gcs_cache_path: str = None):
+                            gcs_cache_path: str = None,
+                            s3_cache_path: str = None):
     """
     Coordinate the generation of data packages.
 
@@ -855,6 +856,8 @@ def generate_datapkg_bundle(datapkg_bundle_settings,
             file cache.
         gcs_cache_path (str): controls whether datastore should be using Google
             Cloud Storage based cache.
+        s3_cache_path (str): controls whether datastore should be using AWS
+            S3 based cache.
 
     Returns:
         dict: A dictionary with datapackage names as the keys, and Python
@@ -869,6 +872,7 @@ def generate_datapkg_bundle(datapkg_bundle_settings,
 
     ds_kwargs = dict(
         gcs_cache_path=gcs_cache_path,
+        s3_cache_path=s3_cache_path,
         sandbox=pudl_settings.get("sandbox", False))
     if use_local_cache:
         ds_kwargs["local_cache_path"] = Path(pudl_settings["pudl_in"]) / "data"

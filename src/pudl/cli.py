@@ -65,6 +65,10 @@ def parse_command_line(argv):
         type=str,
         help="Load datastore resources from Google Cloud Storage. Should be gs://bucket[/path_prefix]")
     parser.add_argument(
+        "--s3-cache-path",
+        type=str,
+        help="Load datastore resources from AWS S3 Storage. Should be s3://bucket[/path_prefix]")
+    parser.add_argument(
         "--bypass-local-cache",
         action="store_true",
         default=False,
@@ -119,7 +123,8 @@ def main():
         datapkg_bundle_doi=datapkg_bundle_doi,
         clobber=args.clobber,
         use_local_cache=not args.bypass_local_cache,
-        gcs_cache_path=args.gcs_cache_path)
+        gcs_cache_path=args.gcs_cache_path,
+        s3_cache_path=args.s3_cache_path)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ from setuptools import find_packages, setup
 
 install_requires = [
     "addfips~=0.3.0",
+    "boto3~=1.17",
     "catalystcoop.dbfread~=3.0",
     "coloredlogs~=15.0",
     "contextily~=1.0",

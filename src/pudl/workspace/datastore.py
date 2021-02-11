@@ -242,6 +242,7 @@ class Datastore:
         self,
         local_cache_path: Optional[Path] = None,
         gcs_cache_path: Optional[str] = None,
+        s3_cache_path: Optional[str] = None,
         sandbox: bool = False,
         timeout: float = 15
     ):
@@ -255,6 +256,9 @@ class Datastore:
             gcs_cache_path (str): if provided, GoogleCloudStorageCache will be used
               to retrieve data files. The path is expected to have the following
               format: gs://bucket[/path_prefix]
+            s3_cache_path (str): if provided, AWSS3Cache will be used
+              to retrieve data files. The path is expected to have the following
+              format: s3://bucket[/path_prefix]
             sandbox (bool): if True, use sandbox zenodo backend when retrieving files,
               otherwise use production. This affects which zenodo servers are contacted
               as well as dois used for each dataset.
@@ -271,6 +275,9 @@ class Datastore:
         if gcs_cache_path:
             self._cache.add_cache_layer(
                 resource_cache.GoogleCloudStorageCache(gcs_cache_path))
+        if s3_cache_path:
+            self._cache.add_cache_layer(
+                resource_cache.AWSS3Cache(s3_cache_path))
 
         self._zenodo_fetcher = ZenodoFetcher(
             sandbox=sandbox,
@@ -414,6 +421,11 @@ Available Sandbox Datasets:
         help="If specified, upload data resources to this GCS bucket"
     )
     parser.add_argument(
+        "--populate-s3-cache",
+        default=None,
+        help="If specified, upload data resources to this AWS S3 bucket"
+    )
+    parser.add_argument(
         "--partition",
         default={},
         action=ParseKeyValues,
@@ -435,12 +447,13 @@ def _get_pudl_in(args: dict) -> Path:
 def _create_datastore(args: dict) -> Datastore:
     """Constructs datastore instance."""
     local_cache_path = None
-    if not args.populate_gcs_cache:
+    if not args.populate_gcs_cache and not args.populate_s3_cache:
         local_cache_path = _get_pudl_in(args) / "data"
     return Datastore(
         sandbox=args.sandbox,
         local_cache_path=local_cache_path,
-        gcs_cache_path=args.populate_gcs_cache)
+        gcs_cache_path=args.populate_gcs_cache,
+        s3_cache_path=args.populate_s3_cache)
 
 
 def main():

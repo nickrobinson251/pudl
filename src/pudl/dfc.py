@@ -79,10 +79,10 @@ class DataFrameCollection:
     def store(self, name: str, data: pd.DataFrame):
         """Adds named dataframe to collection and stores its contents on disk."""
         filename = self._get_filename(name, self._instance_id)
-        if not filename.startswith("gs://"):
+        if not filename.startswith("gs://") or not filename.startswith("s3://"):
             # Do not make directories when dealing with remote storage.
             # TODO(rousik): this is fairly crude solution and won't work
-            # for non gcs remote storage.
+            # for non gcs/s3 remote storage.
             Path(filename).parent.mkdir(exist_ok=True, parents=True)
         data.to_pickle(filename)
         self._table_ids[name] = self._instance_id
