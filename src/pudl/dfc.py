@@ -79,7 +79,7 @@ class DataFrameCollection:
     def store(self, name: str, data: pd.DataFrame):
         """Adds named dataframe to collection and stores its contents on disk."""
         filename = self._get_filename(name, self._instance_id)
-        if not filename.startswith("gs://") or not filename.startswith("s3://"):
+        if not (filename.startswith("gs://") or filename.startswith("s3://")):
             # Do not make directories when dealing with remote storage.
             # TODO(rousik): this is fairly crude solution and won't work
             # for non gcs/s3 remote storage.
