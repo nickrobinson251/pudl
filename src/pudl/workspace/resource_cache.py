@@ -141,7 +141,7 @@ class AWSS3Cache(AbstractCache):
     """Implements file cache backed by AWS S3 bucket."""
 
     def __init__(self, s3_path: str, **kwargs: Any):
-        """Constructs new cache that stores files in AWS S3 Storage.
+        """Constructs new cache that stores files in AWS S3.
 
         Args:
             s3_path (str): path to where the data should be stored. This should
@@ -162,15 +162,17 @@ class AWSS3Cache(AbstractCache):
 
     def get(self, resource: PudlResourceKey) -> bytes:
         """Retrieves value associated with given resource."""
+        logger.debug(f"Getting from AWS S3 cache: {resource}")
         return self._blob(resource).get()['Body'].read()
 
     def add(self, resource: PudlResourceKey, value: bytes):
         """Adds (or updates) resource to the cache with given value."""
-        # TODO return self._blob(resource).upload_from_string(value)
+        logger.debug(f"Adding to AWS S3 cache: {resource}")
         return self._blob(resource).put(Body=value)
 
     def delete(self, resource: PudlResourceKey):
         """Deletes resource from the cache."""
+        logger.debug(f"Deleting from AWS S3 cache: {resource}")
         return self._blob(resource).delete()
 
     def contains(self, resource: PudlResourceKey) -> bool:
